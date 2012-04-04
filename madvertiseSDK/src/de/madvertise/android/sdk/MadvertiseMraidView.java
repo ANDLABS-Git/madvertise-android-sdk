@@ -49,6 +49,7 @@ import android.widget.VideoView;
 
 import java.io.IOException;
 //import android.widget.VideoView;
+import java.lang.reflect.InvocationTargetException;
 
 //import java.io.IOException;
 
@@ -72,7 +73,7 @@ public class MadvertiseMraidView extends WebView {
     private MadvertiseView mMadView;
     private ImageButton mCloseButton;
     private boolean mViewable;
-    private static String mraidJS;
+    private static String sMraidJS;
     private VideoView mVideo;
 
     public MadvertiseMraidView(Context context, MadvertiseViewCallbackListener listener,
@@ -145,8 +146,8 @@ public class MadvertiseMraidView extends WebView {
                     FrameLayout frame = (FrameLayout) view;
                     if (frame.getFocusedChild() instanceof VideoView) {
                         mVideo = (VideoView) ((FrameLayout) view).getFocusedChild();
-                        frame.removeView(mVideo);
-                        ((ViewGroup) getParent()).addView(mVideo);
+//                        frame.removeView(mVideo);
+//                        ((ViewGroup) getParent()).addView(mVideo);
 
                         // Will also be called onError
                         mVideo.setOnCompletionListener(new OnCompletionListener() {
@@ -181,12 +182,7 @@ public class MadvertiseMraidView extends WebView {
 
             @Override
             public void onHideCustomView() {
-                if (mVideo != null) {
-                    ((ViewGroup) getParent()).removeView(mVideo);
-                    if (mVideo.isPlaying()) {
-                        mVideo.stopPlayback();
-                    }
-                }
+                pauseWebView();
             }
         });
     }
@@ -198,12 +194,12 @@ public class MadvertiseMraidView extends WebView {
     protected void loadAd(String url) {
         MadvertiseUtil.logMessage(null, Log.INFO, "loading html Ad: " + url);
 
-        if (mraidJS == null) {
-            mraidJS = MadvertiseUtil.convertStreamToString(getContext().getResources()
+        if (sMraidJS == null) {
+            sMraidJS = MadvertiseUtil.convertStreamToString(getContext().getResources()
                     .openRawResource(de.madvertise.android.sdk.R.raw.mraid));
         }
 
-        loadUrl("javascript:" + mraidJS);
+        loadUrl("javascript:" + sMraidJS);
 
         if (url.endsWith(".js")) {
             final int lastIndex = url.lastIndexOf("/");
@@ -440,10 +436,13 @@ public class MadvertiseMraidView extends WebView {
                 // Set MadvertiseView to GONE. Note: This will cause this view
                 // to be GONE too.
                 ((ViewGroup) getParent()).setVisibility(View.GONE);
+                
                 setState(STATE_HIDDEN);
                 if (mMadView != null) {
                     mMadView.setFetchingAdsEnabled(false);
                 }
+                
+                pauseWebView();
                 break;
         }
     }
@@ -466,23 +465,50 @@ public class MadvertiseMraidView extends WebView {
 
         return closeButton;
     }
+    
+    private void pauseWebView() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+            onPause();
+        } 
+    }
+    
+    private void resumeWebView() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+            onResume();
+        }
+    }
 
     @Override
-    protected void onAttachedToWindow() {
+    public void onAttachedToWindow() {
         mOnScreen = true;
         checkViewable();
+        resumeWebView();
     }
 
     @Override
-    protected void onDetachedFromWindow() {
+    public void onDetachedFromWindow() {
         mOnScreen = false;
         checkViewable();
+        pauseWebView();
     }
+    
+    @Override
+    public void onWindowFocusChanged(boolean hasWindowFocus) {
+        if(!hasWindowFocus) {
+            pauseWebView();
+        } else {
+            resumeWebView();
+        }
+    };
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         checkViewable();
+        
+        if(visibility == View.INVISIBLE) {
+            pauseWebView();
+        }
     }
 
     @Override

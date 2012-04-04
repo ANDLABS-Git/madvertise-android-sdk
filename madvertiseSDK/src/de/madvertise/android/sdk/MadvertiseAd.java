@@ -134,7 +134,7 @@ public class MadvertiseAd {
             // only for testing
             
             // only sound after click, no video
-            //mBannerUrl = "http://dl.dropbox.com/u/48980623/overlay-mraid/index.html";
+            mBannerUrl = "http://dl.dropbox.com/u/48980623/overlay-mraid/index.html";
             
             // nothing happens after first click on play button, second click => excpetion!
             //mBannerUrl = "http://dl.dropbox.com/u/48980623/overlay-mraid-2/index.html";

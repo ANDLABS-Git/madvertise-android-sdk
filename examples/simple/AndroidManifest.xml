@@ -21,7 +21,7 @@
         <!-- open external urls -->
         <activity android:name="de.madvertise.android.sdk.MadvertiseActivity"/>
         
-        <!-- Setup your site token. For tests, use 'TestToken'-->
+        <!-- Setup your site token. For tests, use 'TestTokn'-->
         <meta-data android:value="TestTokn" android:name="madvertise_site_token" />
         
         <!-- Mraid TestSuite -->
