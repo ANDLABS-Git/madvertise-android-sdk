@@ -112,13 +112,13 @@ public class MadvertiseAd {
             mBannerUrl = MadvertiseUtil.getJSONValue(bannerJson, BANNER_URL_CODE);
             mHasBanner = true;
             mBannerType = MadvertiseUtil.getJSONValue(bannerJson, "type");
-               
+
             // check, if rich media banner
             JSONObject richMediaJson = MadvertiseUtil.getJSONObject(bannerJson, "rich_media");
             if (richMediaJson == null) {
         		return;
         	}
-            
+
             // check, if mraid type
             if (!MadvertiseUtil.getJSONBoolean(richMediaJson, "mraid")) {
             	mHasBanner = false;
@@ -139,6 +139,7 @@ public class MadvertiseAd {
             // nothing happens after first click on play button, second click => excpetion!
             //mBannerUrl = "http://dl.dropbox.com/u/48980623/overlay-mraid-2/index.html";
                         // get sizes for rich media ad     
+
             try {
                 mBannerHeight = Integer.parseInt(MadvertiseUtil.getJSONValue(richMediaJson, "height"));
                 mBannerWidth = Integer.parseInt(MadvertiseUtil.getJSONValue(richMediaJson, "width"));
@@ -146,11 +147,7 @@ public class MadvertiseAd {
             	mBannerHeight = 53;
             	mBannerWidth = 320;
             }
-            
-         // only for testing
-        	mBannerHeight = 350;
-        	mBannerWidth = 310;
-                             
+
         } catch (JSONException e) {
             MadvertiseUtil.logMessage(null, Log.DEBUG, "Error in json string");
             if (mCallbackListener != null) {
@@ -218,7 +215,7 @@ public class MadvertiseAd {
     protected JSONArray getImpressionTrackingArray() {
     	return mImpressionTrackingArray;
     }
-    
+
     protected boolean isMraid() {
         return mIsMraid;
     }

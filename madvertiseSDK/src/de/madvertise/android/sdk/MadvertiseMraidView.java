@@ -48,8 +48,6 @@ import android.widget.ImageButton;
 import android.widget.VideoView;
 
 import java.io.IOException;
-//import android.widget.VideoView;
-import java.lang.reflect.InvocationTargetException;
 
 //import java.io.IOException;
 
